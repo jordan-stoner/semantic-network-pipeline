@@ -101,8 +101,8 @@ python config_launcher.py
 1. **Select your base model** from the list
 2. **Choose your trained LoRA adapter** (e.g., "Llama-3-8B-MLX: resume_v01")
 3. **Click "Launch MLX Chat"**
-
-<img width="244" height="329" alt="image" src="https://github.com/user-attachments/assets/3369e0ee-eef5-420e-a0fa-f08a601a63d7" />  
+ 
+<img width="244" height="329" alt="image" src="https://github.com/user-attachments/assets/51bbc88a-0b98-4bb8-9dc2-e14f01b9b5e7" />    
 
 <img width="572" height="329" alt="image" src="https://github.com/user-attachments/assets/b001155f-cbf5-4a3b-893f-e97554554972" />
 
