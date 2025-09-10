@@ -1,0 +1,22 @@
+# Core Dependencies
+flask>=2.3.0
+mlx>=0.0.1
+mlx-lm>=0.0.1
+
+# Text Processing
+nltk>=3.8
+python-docx>=0.8.11
+
+# Data Processing
+numpy>=1.24.0
+matplotlib>=3.7.0
+wordcloud>=1.9.0
+
+# Web and Utilities
+requests>=2.31.0
+pathlib2>=2.3.7
+psutil>=5.9.0
+
+# Optional Dependencies for additional functionality
+Pillow>=10.0.0
+beautifulsoup4>=4.12.0

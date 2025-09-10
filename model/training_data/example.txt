@@ -1,0 +1,18 @@
+This is an example text file for MLX Chat analysis.
+
+You can replace this file with your own documents for text analysis and LoRA training data generation.
+
+The system will analyze:
+- Word frequencies and patterns
+- Part-of-speech relationships
+- Collocations (words that commonly appear together)
+- Linguistic structures for fine-tuning
+
+Supported formats include plain text files (.txt) and Microsoft Word documents (.docx).
+
+To get started:
+1. Replace this file with your own content
+2. Run: python create_wordcloud.py
+3. View the interactive analysis in your browser
+
+The analysis runs completely locally - your data never leaves your computer.

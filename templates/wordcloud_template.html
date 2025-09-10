@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Cloud Analysis</title>
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../../static/css/magma-theme.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--obsidian-black) !important;
+            color: var(--smoke-white) !important;
+            margin: 0;
+            padding: 10px;
+            min-height: 100vh;
+        }
+        .wordcloud-container { margin: 0; padding: 0; }
+        .wordcloud-title { margin: 10px 0; }
+        .wordcloud-stats { margin: 5px 0 15px 0; }
+        .wordcloud-chart-container { margin: 10px 0; padding: 10px !important; }
+        .wordcloud-chart-title { margin: 10px 0 !important; }
+        #networkChart { height: 600px; width: 85vw; border: 1px solid #333; }
+        .btn { background: #ff6b35; border: 1px solid #ff4500; color: #f5f5f5; padding: 8px 12px; border-radius: 5px; cursor: pointer; }
+        .btn:hover { background: #ff4500; }
+        .btn-icon { padding: 8px; }
+        #wordDetails { padding: 15px; }
+        .wordcloud-word { cursor: pointer; transition: opacity 0.2s; }
+        .wordcloud-word--high { background: rgba(255, 107, 53, 0.8); }
+        .wordcloud-word--medium-high { background: rgba(255, 69, 0, 0.7); }
+        .wordcloud-word--medium { background: rgba(255, 170, 68, 0.6); }
+        .wordcloud-word--medium-low { background: rgba(255, 140, 66, 0.5); }
+        .wordcloud-word--low { background: rgba(210, 105, 30, 0.4); }
+    </style>
+</head>
+<body>
+    <div class="wordcloud-container">
+        <h1 class="wordcloud-title"><i class="bi bi-bar-chart-fill"></i> Word Cloud Analysis</h1>
+        <div class="wordcloud-stats">
+            <p><strong>Word Use Count:</strong> {total_words} | <strong>Unique words:</strong> {unique_words} | <strong>Displaying top:</strong> 100</p>
+        </div>
+        
+        <div class="wordcloud-chart-container">
+            <h3 class="wordcloud-chart-title"><i class="bi bi-diagram-3"></i> Word Relationships & Collocations</h3>
+            <div style="max-width: 85vw; padding-right: 30px; margin: 5px auto 10px auto;">
+                <label for="posFilter" style="color: #ff6b35; font-weight: bold; margin-right: 10px;">Filter by POS:</label>
+                <select id="posFilter" style="background: #2a2a2a; color: #f5f5f5; border: 1px solid #ff6b35; border-radius: 5px; padding: 5px; min-width: 200px;">
+                    <option value="" disabled selected>Select POS to toggle</option>
+                    <option value="noun" data-enabled="true">✓ Noun</option>
+                    <option value="verb" data-enabled="true">✓ Verb</option>
+                    <option value="adjective" data-enabled="true">✓ Adjective</option>
+                    <option value="adverb" data-enabled="true">✓ Adverb</option>
+                    <option value="pronoun" data-enabled="false">✗ Pronoun</option>
+                    <option value="preposition" data-enabled="false">✗ Preposition</option>
+                    <option value="article" data-enabled="false">✗ Article</option>
+                </select>
+            </div>
+            <div style="display: flex; flex-direction: row; flex-wrap: nowrap; gap: 5px; align-items: flex-start; justify-content: center; max-width: 90vw; margin: 0 auto;">
+                <div id="networkChart"></div>
+                <div style="display: flex; flex-direction: column; gap: 5px;">
+                    <button id="zoomIn" class="btn btn-icon"><i class="bi bi-zoom-in"></i></button>
+                    <button id="zoomOut" class="btn btn-icon"><i class="bi bi-zoom-out"></i></button>
+                </div>
+            </div>
+            <div id="wordDetails" style="margin-top: 20px; background: #2a2a2a; border-radius: 8px; border: 1px solid #d2691e; max-width: 90vw; margin-left: auto; margin-right: auto;">
+                <h4 id="selectedWord" style="color: #ff6b35; margin: 0 0 10px 0;">All Words</h4>
+                <p id="wordInfo" style="margin: 5px 0; color: #f5f5f5;"></p>
+                <div id="wordCloudFiltered" style="margin-top: 10px; word-wrap: break-word; overflow-wrap: break-word;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const networkData = {network_data};
+        const collocations = {collocations_data};
+        
+        const maxCount = Math.max(...networkData.map(w => w.count));
+        const nodes = networkData.map(word => {
+            const frequency = word.count / maxCount;
+            let distance;
+            if (frequency >= 0.95) {
+                distance = Math.random() * 150;
+            } else if (frequency >= 0.25) {
+                distance = 150 + Math.random() * 150;
+            } else if (frequency >= 0.05) {
+                distance = 300 + Math.random() * 200;
+            } else {
+                distance = 500 + Math.random() * 400;
+            }
+            const angle = Math.random() * 2 * Math.PI;
+            
+            return {
+                id: word.word,
+                label: word.lemma,
+                value: word.count,
+                x: distance * Math.cos(angle),
+                y: distance * Math.sin(angle),
+                title: `${word.lemma}\nCount: ${word.count}\nPOS: ${word.pos}`,
+                color: {
+                    background: '#ff6b35',
+                    border: '#ff4500',
+                    highlight: { background: '#ff4500', border: '#ff6b35' }
+                },
+                font: { color: '#f5f5f5' }
+            };
+        });
+        
+        const edges = [];
+        collocations.forEach(conn => {
+            const words = conn.words.split(' + ');
+            if (words.length === 2) {
+                edges.push({
+                    from: words[0],
+                    to: words[1],
+                    color: { color: '#d2691e', opacity: 0.6 },
+                    width: 2
+                });
+            }
+        });
+        
+        const container = document.getElementById('networkChart');
+        const data = { nodes: new vis.DataSet(nodes), edges: new vis.DataSet(edges) };
+        const options = {
+            nodes: {
+                shape: 'dot',
+                scaling: { min: 10, max: 30 },
+                font: { color: '#f5f5f5', size: 12 },
+                margin: 10
+            },
+            edges: { smooth: { type: 'continuous' } },
+            physics: {
+                enabled: true,
+                stabilization: false,
+                barnesHut: { 
+                    gravitationalConstant: -900, 
+                    springConstant: 0.00001,
+                    damping: 0.25,
+                    avoidOverlap: 0.75
+                },
+                solver: 'barnesHut',
+                timestep: 0.35,
+                adaptiveTimestep: true
+            },
+            interaction: { 
+                hover: true, 
+                tooltipDelay: 200,
+                zoomView: false,
+                dragView: false,
+                dragNodes: false
+            },
+            configure: { enabled: false }
+        };
+        
+        const network = new vis.Network(container, data, options);
+        
+        const posCategories = {
+            'NN': 'noun', 'NNS': 'noun', 'NNP': 'noun', 'NNPS': 'noun',
+            'VB': 'verb', 'VBD': 'verb', 'VBG': 'verb', 'VBN': 'verb', 'VBP': 'verb', 'VBZ': 'verb',
+            'JJ': 'adjective', 'JJR': 'adjective', 'JJS': 'adjective',
+            'RB': 'adverb', 'RBR': 'adverb', 'RBS': 'adverb',
+            'PRP': 'pronoun', 'PRP$': 'pronoun', 'WP': 'pronoun', 'WP$': 'pronoun',
+            'IN': 'preposition',
+            'DT': 'article'
+        };
+        
+        const originalNodes = nodes.slice();
+        const originalEdges = edges.slice();
+        let enabledCategories = new Set(['noun', 'verb', 'adjective', 'adverb']);
+        let dampingInterval;
+        let currentDamping = 0.1;
+        let stabilizationTimeout;
+        
+        function applyPOSFilter() {
+            const filteredNodes = originalNodes.filter(node => {
+                const wordData = networkData.find(w => w.word === node.id);
+                const category = posCategories[wordData.pos] || 'unknown';
+                return enabledCategories.has(category);
+            });
+            
+            const visibleNodeIds = new Set(filteredNodes.map(n => n.id));
+            const filteredEdges = originalEdges.filter(edge => 
+                visibleNodeIds.has(edge.from) && visibleNodeIds.has(edge.to)
+            );
+            
+            if (stabilizationTimeout) clearTimeout(stabilizationTimeout);
+            if (dampingInterval) clearInterval(dampingInterval);
+            
+            currentDamping = 0.25;
+            network.setOptions({ physics: { enabled: true } });
+            data.nodes.clear();
+            data.edges.clear();
+            data.nodes.add(filteredNodes);
+            data.edges.add(filteredEdges);
+            
+            setTimeout(() => {
+                dampingInterval = setInterval(() => {
+                    currentDamping = Math.min(0.9, currentDamping + 0.1);
+                    const physicsOptions = network.physics.options;
+                    physicsOptions.barnesHut.damping = currentDamping;
+                }, 1000);
+            }, 3000);
+            
+            stabilizationTimeout = setTimeout(() => {
+                if (dampingInterval) clearInterval(dampingInterval);
+                forceStabilization();
+            }, 10000);
+            
+            const filteredWordData = networkData.filter(w => {
+                const category = posCategories[w.pos] || 'unknown';
+                return enabledCategories.has(category);
+            });
+            displayFilteredWordCloud(filteredWordData);
+        }
+        
+        const defaultCenterNode = nodes.reduce((prev, current) => 
+            (prev.value > current.value) ? prev : current
+        );
+        
+        let currentZoomStep = 5;
+        const maxZoomSteps = 10;
+        const baseScale = 1.0;
+        const zoomFactor = 1.2;
+        let selectedNodeId = defaultCenterNode.id;
+        let hiddenWords = new Set();
+        
+        function updateZoom() {
+            const scale = baseScale * Math.pow(zoomFactor, currentZoomStep - 5);
+            const nodePosition = network.getPositions([selectedNodeId])[selectedNodeId];
+            network.moveTo({ 
+                position: nodePosition,
+                scale: scale 
+            });
+        }
+        
+        function forceStabilization() {
+            network.setOptions({ physics: { enabled: false } });
+        }
+        
+        const posMap = {
+            'NN': 'Noun', 'NNS': 'Noun', 'NNP': 'Proper Noun', 'NNPS': 'Proper Noun',
+            'JJ': 'Adjective', 'JJR': 'Adjective', 'JJS': 'Adjective',
+            'RB': 'Adverb', 'RBR': 'Adverb', 'RBS': 'Adverb',
+            'VB': 'Verb', 'VBD': 'Verb', 'VBG': 'Verb', 'VBN': 'Verb',
+            'VBP': 'Verb', 'VBZ': 'Verb'
+        };
+        
+        function updateDetailsBox(selectedNodeId = null) {
+            if (selectedNodeId) {
+                const nodeData = nodes.find(n => n.id === selectedNodeId);
+                const wordData = networkData.find(w => w.word === selectedNodeId);
+                
+                const connectedEdges = edges.filter(e => e.from === selectedNodeId || e.to === selectedNodeId);
+                
+                document.getElementById('selectedWord').textContent = nodeData.label;
+                document.getElementById('wordInfo').innerHTML = 
+                    `<strong>Word Use Count:</strong> ${nodeData.value}<br>` +
+                    `<strong>Connected Word Count:</strong> ${connectedEdges.length}<br>` +
+                    `<strong>Part of Speech:</strong> ${posMap[wordData.pos] || wordData.pos}`;
+                
+                const connectedWords = connectedEdges.map(e => e.from === selectedNodeId ? e.to : e.from);
+                const connectedWordData = networkData.filter(w => connectedWords.includes(w.word));
+                
+                displayFilteredWordCloud(connectedWordData);
+            } else {
+                const totalCount = networkData.reduce((sum, w) => sum + w.count, 0);
+                const uniqueConnections = new Set(edges.map(e => [e.from, e.to].sort().join('-'))).size;
+                const allPOS = [...new Set(networkData.map(w => posMap[w.pos] || w.pos))].join(', ');
+                
+                document.getElementById('selectedWord').textContent = 'All Words';
+                document.getElementById('wordInfo').innerHTML = 
+                    `<strong>Word Use Count:</strong> ${totalCount}<br>` +
+                    `<strong>Connected Word Count:</strong> ${uniqueConnections}<br>` +
+                    `<strong>Part of Speech:</strong> ${allPOS}`;
+                
+                displayFilteredWordCloud(networkData);
+            }
+        }
+        
+        function displayFilteredWordCloud(wordData) {
+            const container = document.getElementById('wordCloudFiltered');
+            if (wordData.length === 0) {
+                container.innerHTML = '<em>No connected words</em>';
+                return;
+            }
+            
+            const maxCount = Math.max(...wordData.map(w => w.count));
+            const wordElements = wordData.map(word => {
+                const size = 12 + (word.count / maxCount) * 24;
+                const frequency = word.count / maxCount;
+                let cssClass = 'wordcloud-word--low';
+                if (frequency > 0.8) cssClass = 'wordcloud-word--high';
+                else if (frequency > 0.6) cssClass = 'wordcloud-word--medium-high';
+                else if (frequency > 0.4) cssClass = 'wordcloud-word--medium';
+                else if (frequency > 0.2) cssClass = 'wordcloud-word--medium-low';
+                
+                const isHidden = hiddenWords.has(word.word);
+                const opacity = isHidden ? '0.3' : '1';
+                const cursor = (word.word === selectedNodeId) ? 'not-allowed' : 'pointer';
+                
+                return `<span class="wordcloud-word ${cssClass}" 
+                    style="font-size: ${size}px; margin: 3px; padding: 2px 6px; display: inline-block; border-radius: 10px; opacity: ${opacity}; cursor: ${cursor};" 
+                    title="${word.word}: ${word.count} occurrences" 
+                    data-word="${word.word}" 
+                    onclick="toggleWordVisibility('${word.word}')">${word.lemma}</span>`;
+            }).join(' ');
+            
+            container.innerHTML = wordElements;
+        }
+        
+        function toggleWordVisibility(wordId) {
+            if (wordId === selectedNodeId) {
+                return;
+            }
+            
+            if (hiddenWords.has(wordId)) {
+                hiddenWords.delete(wordId);
+                const nodeToShow = originalNodes.find(n => n.id === wordId);
+                if (nodeToShow) {
+                    data.nodes.add(nodeToShow);
+                    const edgesToShow = originalEdges.filter(e => 
+                        (e.from === wordId || e.to === wordId) && 
+                        !hiddenWords.has(e.from) && !hiddenWords.has(e.to)
+                    );
+                    data.edges.add(edgesToShow);
+                }
+            } else {
+                hiddenWords.add(wordId);
+                data.nodes.remove(wordId);
+                const edgesToRemove = data.edges.get().filter(e => e.from === wordId || e.to === wordId);
+                data.edges.remove(edgesToRemove.map(e => e.id));
+            }
+            
+            const currentWordData = networkData.filter(w => {
+                const category = posCategories[w.pos] || 'unknown';
+                return enabledCategories.has(category);
+            });
+            displayFilteredWordCloud(currentWordData);
+        }
+        
+        document.getElementById('posFilter').addEventListener('change', function() {
+            const selectedValue = this.value;
+            const option = this.querySelector(`option[value="${selectedValue}"]`);
+            
+            if (selectedValue && option) {
+                const isEnabled = option.dataset.enabled === 'true';
+                
+                if (isEnabled) {
+                    enabledCategories.delete(selectedValue);
+                    option.dataset.enabled = 'false';
+                    option.textContent = '✗ ' + option.textContent.substring(2);
+                } else {
+                    enabledCategories.add(selectedValue);
+                    option.dataset.enabled = 'true';
+                    option.textContent = '✓ ' + option.textContent.substring(2);
+                }
+                
+                this.selectedIndex = 0;
+                applyPOSFilter();
+            }
+        });
+        
+        document.getElementById('zoomIn').addEventListener('click', function() {
+            if (currentZoomStep < maxZoomSteps) {
+                currentZoomStep++;
+                updateZoom();
+            }
+        });
+        
+        document.getElementById('zoomOut').addEventListener('click', function() {
+            if (currentZoomStep > 0) {
+                currentZoomStep--;
+                updateZoom();
+            }
+        });
+        
+        network.on('click', function(params) {
+            if (params.nodes.length > 0) {
+                selectedNodeId = params.nodes[0];
+                updateDetailsBox(selectedNodeId);
+            } else {
+                selectedNodeId = defaultCenterNode.id;
+                updateDetailsBox();
+            }
+        });
+        
+        setTimeout(() => {
+            updateZoom();
+            applyPOSFilter();
+        }, 100);
+        
+        updateDetailsBox();
+        
+        // Make function available globally for onclick handlers
+        window.toggleWordVisibility = toggleWordVisibility;
+    </script>
+</body>
+</html>

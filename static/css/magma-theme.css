@@ -1,0 +1,615 @@
+/* Magma Theme - Color Palette */
+
+:root {
+    /* Basic Unit - Standard height for buttons and inputs */
+    --basicUnit: 40px;
+    
+    /* Primary Colors - Magma Core */
+    --obsidian-black: #0a0a0a;
+    --deep-charcoal: #1a1a1a;
+    --volcanic-ash: #2a2a2a;
+    
+    /* Accent Colors - Lava Flow */
+    --molten-orange: #ff6b35;
+    --ember-red: #ff4500;
+    --lava-yellow: #ffaa44;
+    
+    /* Supporting Colors - Heat Gradients */
+    --warm-amber: #ff8c42;
+    --copper-glow: #d2691e;
+    --crimson-edge: #dc143c;
+    --dark-crimson: #b91c3c;
+    
+    /* Neutral Tones */
+    --ash-gray: #4a4a4a;
+    --smoke-white: #f5f5f5;
+    --ember-glow: rgba(255, 107, 53, 0.1);
+    --lava-shadow: rgba(255, 107, 53, 0.3);
+}
+
+/* Navbar */
+.navbar {
+    background-color: #2c2c2c !important;
+}
+
+/* Loading Screen */
+.loading-overlay {
+    background: rgba(0,0,0,0.9) !important;
+    cursor: pointer !important;
+}
+
+/* Message Input */
+.message-input {
+    resize: none !important;
+    max-height: 100px !important;
+    overflow-y: auto !important;
+    flex: 1 !important;
+    min-width: 0 !important;
+}
+
+/* Wordcloud Styles */
+.wordcloud-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    background: var(--deep-charcoal);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    backdrop-filter: blur(10px);
+}
+
+.wordcloud-title {
+    text-align: center;
+    color: var(--smoke-white);
+    margin-bottom: 30px;
+    font-size: 2.5em;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.wordcloud-stats {
+    text-align: center;
+    margin-bottom: 30px;
+    color: var(--smoke-white);
+    font-size: 1.1em;
+}
+
+.wordcloud {
+    text-align: left;
+    line-height: 1.2;
+    padding: 20px;
+    background: var(--volcanic-ash);
+    border-radius: 10px;
+    margin: 20px 0;
+}
+
+.wordcloud-word {
+    display: inline-block;
+    margin: 5px;
+    padding: 3px 8px;
+    border-radius: 15px;
+    transition: transform 0.2s;
+    cursor: default;
+}
+
+.wordcloud-word:hover {
+    transform: scale(1.1);
+}
+
+.wordcloud-word--high {
+    color: var(--molten-orange);
+    background-color: var(--lava-shadow);
+}
+
+.wordcloud-word--medium-high {
+    color: var(--ember-red);
+    background-color: var(--lava-shadow);
+}
+
+.wordcloud-word--medium {
+    color: var(--lava-yellow);
+    background-color: var(--lava-shadow);
+}
+
+.wordcloud-word--medium-low {
+    color: var(--warm-amber);
+    background-color: var(--ember-glow);
+}
+
+.wordcloud-word--low {
+    color: var(--copper-glow);
+    background-color: var(--ember-glow);
+}
+
+.wordcloud-chart-container {
+    margin: 40px 0;
+    background: var(--volcanic-ash);
+    border-radius: 15px;
+    padding: 30px;
+}
+
+.wordcloud-chart-title {
+    color: var(--smoke-white);
+    margin-bottom: 20px;
+    font-size: 1.8em;
+    text-align: center;
+}
+
+.wordcloud-chart {
+    max-height: 600px;
+}
+
+.wordcloud-instructions {
+    text-align: center;
+    margin-bottom: 30px;
+    color: var(--smoke-white);
+    font-style: italic;
+}
+
+/* Bootstrap Icons Spacing */
+.bi {
+    margin-right: 10px;
+}
+
+/* Input Group Wrapper */
+.input-group-wrapper {
+    width: 66vw;
+    margin: 0 auto;
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-end;
+}
+
+/* Delete Button Icon */
+.delete-icon {
+    font-size: 12px !important;
+}
+
+/* Shutdown Message */
+.shutdown-message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: #0a0a0a;
+    color: #f5f5f5;
+}
+
+/* Global Overrides */
+body {
+    background: var(--obsidian-black) !important;
+    color: var(--smoke-white) !important;
+    padding-bottom: 0; /* Remove fixed padding for dynamic footer */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Navbar Styling */
+.navbar {
+    background: linear-gradient(90deg, var(--obsidian-black), var(--deep-charcoal)) !important;
+    border-bottom: 2px solid var(--molten-orange) !important;
+    backdrop-filter: blur(10px);
+}
+
+.navbar-brand {
+    color: var(--molten-orange) !important;
+    font-weight: 600;
+}
+
+.navbar-text {
+    color: var(--warm-amber) !important;
+}
+
+/* Clean Button System - Three Styles Only */
+
+/* Base button reset - Higher specificity */
+.btn, button.btn {
+    border: none !important;
+    transition: all 0.2s ease !important;
+    transform: translateY(0) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+}
+
+/* Override custom-framework.css margin classes - Maximum specificity */
+.btn i.bi.me-1, button i.bi.me-1, .btn-text i.bi.me-1, .btn-icon i.bi.me-1 {
+    margin-right: 10px !important;
+    margin-left: 0 !important;
+}
+
+.btn i.bi.me-2, button i.bi.me-2, .btn-text i.bi.me-2, .btn-icon i.bi.me-2 {
+    margin-right: 10px !important;
+    margin-left: 0 !important;
+}
+
+/* Icons without margin classes - like Quit button */
+.btn i.bi, button i.bi, .btn-text i.bi, .btn-icon i.bi {
+    margin-right: 10px !important;
+    margin-left: 0 !important;
+}
+
+/* Target buttons specifically within edit-options */
+.edit-options .btn i.me-1::after {
+    content: " ";
+    width: 10px;
+    display: inline-block;
+}
+
+.edit-options .btn i.me-1 {
+    margin-right: 10px !important;
+}
+
+/* Also try direct targeting */
+.edit-options #editBtnDynamic i,
+.edit-options #regenerateBtnDynamic i {
+    margin-right: 10px !important;
+}
+
+/* Maximum specificity for problematic buttons */
+#quitButton i.bi, #quitButton i {
+    margin-right: 10px !important;
+    margin-left: 0 !important;
+}
+
+#editBtnDynamic i.bi, #editBtnDynamic i, #editBtnDynamic i.me-1 {
+    margin-right: 10px !important;
+    margin-left: 0 !important;
+}
+
+#regenerateBtnDynamic i.bi, #regenerateBtnDynamic i, #regenerateBtnDynamic i.me-1 {
+    margin-right: 10px !important;
+    margin-left: 0 !important;
+}
+
+/* Icon spacing within buttons - Higher specificity */
+.btn i, button.btn i {
+    margin: 0 10px !important;
+    padding: 0 !important;
+}
+
+/* Icon with text spacing - Higher specificity */
+.btn i + *, button.btn i + * {
+    margin-left: 0 !important;
+}
+
+/* Remove extra margin from first icon */
+.btn i:first-child, button.btn i:first-child {
+    margin-left: 0 !important;
+}
+
+/* Remove extra margin from last icon */
+.btn i:last-child, button.btn i:last-child {
+    margin-right: 0 !important;
+}
+
+/* Icon-only buttons (square) - Higher specificity */
+.btn-icon, button.btn-icon {
+    width: var(--basicUnit) !important;
+    height: var(--basicUnit) !important;
+    padding: 0 !important;
+    background: linear-gradient(135deg, var(--molten-orange), var(--ember-red)) !important;
+    color: var(--obsidian-black) !important;
+    box-shadow: 0 2px 8px var(--lava-shadow);
+}
+
+/* Icon-only buttons - center icon perfectly */
+.btn-icon i, button.btn-icon i {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.btn-icon:hover {
+    background: linear-gradient(135deg, var(--warm-amber), var(--molten-orange)) !important;
+    color: var(--smoke-white) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px var(--lava-shadow) !important;
+}
+
+.btn-icon:disabled {
+    opacity: 0.5 !important;
+    pointer-events: none !important;
+    transform: none !important;
+    background: var(--ash-gray) !important;
+    color: var(--smoke-white) !important;
+    box-shadow: none !important;
+}
+
+/* Text buttons (rectangular) */
+.btn-text {
+    min-width: calc(var(--basicUnit) * 3) !important;
+    height: var(--basicUnit) !important;
+    padding: 0 15px !important;
+    background: linear-gradient(135deg, var(--molten-orange), var(--ember-red)) !important;
+    color: var(--obsidian-black) !important;
+    box-shadow: 0 2px 8px var(--lava-shadow);
+}
+
+/* Text buttons - proper icon spacing */
+.btn-text i, button.btn-text i {
+    padding: 0 !important;
+    margin-right: 10px !important;
+}
+
+/* Text buttons - remove margin from last element */
+.btn-text i:last-child, button.btn-text i:last-child {
+    margin-right: 0 !important;
+}
+
+
+
+.btn-text:hover {
+    background: linear-gradient(135deg, var(--warm-amber), var(--molten-orange)) !important;
+    color: var(--smoke-white) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px var(--lava-shadow) !important;
+}
+
+/* Red buttons (text or icon) */
+.btn-red {
+    background: var(--crimson-edge) !important;
+    color: var(--obsidian-black) !important;
+    box-shadow: 0 2px 8px rgba(220, 20, 60, 0.3);
+}
+
+.btn-red:hover {
+    background: var(--dark-crimson) !important;
+    color: var(--smoke-white) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(185, 28, 60, 0.4) !important;
+}
+
+/* Chat Messages Container */
+.messages-container {
+    padding-bottom: 60px;
+}
+
+/* Message delete button */
+.delete-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(220, 53, 69, 0.8) !important;
+    border: none !important;
+    border-radius: 50% !important;
+    width: 24px !important;
+    height: 24px !important;
+    padding: 0 !important;
+    opacity: 0.25;
+    transition: opacity 0.2s ease;
+    z-index: 10;
+}
+
+.delete-btn:hover {
+    opacity: 1 !important;
+    background: rgba(220, 53, 69, 1) !important;
+}
+
+.message-bubble {
+    position: relative;
+}
+
+/* Message Bubbles */
+.message-bubble {
+    width: 90% !important;
+    max-width: 90% !important;
+}
+
+.message-bubble .card {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+.user-message .card {
+    background: #404040 !important;
+    border: 1px solid #555555 !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.assistant-message .card {
+    background: linear-gradient(135deg, var(--deep-charcoal), var(--volcanic-ash)) !important;
+    border: 1px solid var(--copper-glow) !important;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Input Styling */
+.form-control {
+    background-color: var(--volcanic-ash) !important;
+    border: 2px solid var(--ash-gray) !important;
+    color: var(--smoke-white) !important;
+    min-height: var(--basicUnit) !important;
+}
+
+.form-control:focus {
+    background-color: var(--deep-charcoal) !important;
+    border-color: var(--molten-orange) !important;
+    box-shadow: 0 0 0 0.2rem var(--ember-glow) !important;
+    color: var(--smoke-white) !important;
+}
+
+.form-control::placeholder {
+    color: var(--ash-gray) !important;
+}
+
+/* Input Section */
+.input-section {
+    background: linear-gradient(90deg, var(--obsidian-black), var(--deep-charcoal)) !important;
+    border-top: 2px solid var(--copper-glow) !important;
+    backdrop-filter: blur(10px);
+}
+
+/* Settings Sidebar */
+.settings-sidebar {
+    position: fixed;
+    top: 0;
+    right: -300px;
+    width: 300px;
+    height: 100vh;
+    background: linear-gradient(135deg, var(--deep-charcoal), var(--volcanic-ash));
+    border-left: 2px solid var(--molten-orange);
+    z-index: 1000;
+    transition: right 0.3s ease;
+    overflow-y: auto;
+}
+
+.settings-sidebar.open {
+    right: 0;
+}
+
+.settings-content {
+    padding: 20px;
+    color: var(--smoke-white);
+}
+
+.settings-content h5 {
+    color: var(--molten-orange);
+    border-bottom: 1px solid var(--ember-red);
+    padding-bottom: 10px;
+}
+
+.settings-content .form-label {
+    color: var(--smoke-white);
+    font-weight: 500;
+}
+
+.settings-content .form-range {
+    background: var(--obsidian-black);
+}
+
+.settings-content .form-range::-webkit-slider-thumb {
+    background: var(--molten-orange);
+    border: 2px solid var(--ember-red);
+}
+
+.settings-content .form-range::-moz-range-thumb {
+    background: var(--molten-orange);
+    border: 2px solid var(--ember-red);
+}
+
+.settings-content .badge {
+    background: var(--molten-orange) !important;
+    color: var(--obsidian-black) !important;
+}
+
+/* Loading Animation */
+.loading-overlay {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 9999 !important;
+}
+
+.loading-overlay.hidden {
+    display: none !important;
+}
+
+.loading-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    position: relative;
+    background: linear-gradient(45deg, var(--molten-orange), var(--ember-red)) !important;
+    box-shadow: 0 0 40px var(--lava-shadow), 0 0 80px var(--ember-glow) !important;
+    animation: loadingPulse 5s ease-in-out infinite;
+}
+
+.loading-icon::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, var(--molten-orange), var(--ember-red)) !important;
+    filter: blur(15px);
+    opacity: 0.7;
+    z-index: -1;
+}
+
+@keyframes loadingPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+}
+
+/* Edit Options */
+.edit-options {
+    background: linear-gradient(135deg, var(--volcanic-ash), var(--deep-charcoal)) !important;
+    border: 2px solid var(--lava-yellow) !important;
+}
+
+/* Typing Indicator */
+.typing-indicator {
+    background: linear-gradient(135deg, var(--deep-charcoal), var(--volcanic-ash)) !important;
+    border: 1px solid var(--molten-orange) !important;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { box-shadow: 0 0 5px var(--ember-glow); }
+    50% { box-shadow: 0 0 20px var(--lava-shadow); }
+}
+
+/* Chat Container - Override Bootstrap and force full width layout */
+.chat-container {
+    height: calc(100vh - 140px) !important;
+    overflow: hidden !important;
+    width: 100vw !important;
+    max-width: none !important;
+}
+
+.chat-container .row {
+    height: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+}
+
+.chat-container .col-12 {
+    height: 100% !important;
+    width: 100% !important;
+    max-width: none !important;
+    padding: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.messages-container {
+    height: 100% !important;
+    width: 100% !important;
+    overflow-y: scroll !important;
+    overflow-x: hidden !important;
+    padding: 1rem !important;
+    flex: 1 !important;
+}
+
+/* Scrollbar Styling */
+.messages-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.messages-container::-webkit-scrollbar-track {
+    background: var(--deep-charcoal);
+}
+
+.messages-container::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--molten-orange), var(--ember-red));
+    border-radius: 4px;
+}
+
+.messages-container::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, var(--warm-amber), var(--molten-orange));
+}
+
+/* Welcome Message */
+.text-muted {
+    color: var(--ash-gray) !important;
+}
+
+/* Icons */
+.bi {
+    filter: drop-shadow(0 0 2px var(--ember-glow));
+}
