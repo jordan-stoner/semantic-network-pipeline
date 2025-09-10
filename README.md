@@ -420,7 +420,7 @@ Please follow the established design standards and file organization principles 
 
 ## License
 
-[License information to be added]
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) (https://opensource.org/license/mit)
 
 ## 📚 Documentation
 
